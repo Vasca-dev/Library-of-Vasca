@@ -668,6 +668,6 @@ def delete_recipe(recipe_id):
 # start
 
 if __name__ == '__main__':
-    print("I'm Kevin.")
     init_db()
+
     app.run(port=1951, debug=True)
