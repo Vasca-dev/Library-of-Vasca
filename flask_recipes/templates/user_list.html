@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+{% block title %}User List{% endblock %}
+{% block content %}
+
+<div class="w3-container w3-center" style="
+    min-height:100vh;
+    background: linear-gradient(135deg, #3c1f1a, #5a2b23);
+    color: #f8e3b0;
+    font-family:'Georgia','Times New Roman', serif;
+    padding: 40px 0;
+">
+
+    <h2 style="color:#ffd36f; margin-bottom:30px;">User List</h2>
+
+    <!-- Close Button -->
+    <div style="position:absolute; top:16px; right:16px;">
+        <a href="/" style="font-size:24px; text-decoration:none; color:#ffd36f;">&#x2715;</a>
+    </div>
+
+    {% if library %}
+        <div style="display:flex; flex-direction:column; gap:20px; align-items:center;">
+            {% for user in library %}
+                <div style="
+                    display:flex;
+                    align-items:center;
+                    width:600px;
+                    background: rgba(60,25,20,0.85);
+                    border:2px solid #d1aa66;
+                    border-radius:12px;
+                    padding:16px;
+                    box-shadow:0 0 15px rgba(0,0,0,0.5);
+                    transition: transform 0.2s;
+                " onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
+
+                    <!-- Profile Picture -->
+                    <div>
+                        <img src="{{ user['picture_ID'] or '/static/default_pfp.png' }}"
+                             alt="{{ user['username'] }}"
+                             style="width:100px; height:100px; border-radius:50%; object-fit:cover; border:2px solid #d1aa66; margin-right:16px;">
+                    </div>
+
+                    <!-- User Info -->
+                    <div style="flex-grow:1; text-align:center;">
+                        {% if user['head_admin'] %}
+                            <div style="font-size:0.8em; font-weight:bold; color:#fff; background-color:#b30000; border-radius:4px; padding:3px 8px; margin-bottom:6px;">
+                                Head Admin
+                            </div>
+                        {% elif user['admin'] %}
+                            <div style="font-size:0.8em; font-weight:bold; color:#fff; background-color:#4b00b3; border-radius:4px; padding:3px 8px; margin-bottom:6px;">
+                                Admin
+                            </div>
+                        {% endif %}
+
+                        <h3 style="margin:0; color:#ffd36f;">{{ user['username'] }}</h3>
+                        <p style="margin:4px 0 0; font-size:0.9em; color:#d9b887;">{{ user['email'] }}</p>
+                    </div>
+                    <!-- Action Buttons -->
+                    <div style="display:flex; flex-direction:column; gap:6px;">
+                        {% if user['head_admin'] %}
+                            <button type="button" style="
+                                padding:6px 12px;
+                                background-color:#800000;
+                                color:#fff;
+                                border:none;
+                                border-radius:6px;
+                                cursor:not-allowed;
+                            " disabled>Head Admin</button>
+                        {% elif user['admin'] %}
+                            <form action="/revoke_admin/{{ user['username'] }}" method="POST">
+                                <button type="submit" style="
+                                    padding:6px 12px;
+                                    background-color:#d1aa66;
+                                    color:#3c1f1a;
+                                    border:none;
+                                    border-radius:6px;
+                                    cursor:pointer;
+                                    font-weight:bold;
+                                ">Revoke Admin</button>
+                            </form>
+                        {% else %}
+                            <form action="/add_admin/{{ user['username'] }}" method="POST">
+                                <button type="submit" style="
+                                    padding:6px 12px;
+                                    background-color:#4b00b3;
+                                    color:#ffd36f;
+                                    border:none;
+                                    border-radius:6px;
+                                    cursor:pointer;
+                                    font-weight:bold;
+                                ">Add Admin</button>
+                            </form>
+                        {% endif %}
+                    </div>
+
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p style="color:#d9b887; margin-top:30px;">No users found.</p>
+    {% endif %}
+
+</div>
+
+{% endblock %}

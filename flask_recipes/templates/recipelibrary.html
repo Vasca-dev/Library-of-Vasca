@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+{% block title %}Recipe Library{% endblock %}
+{% block content %}
+
+{% set difficulty_colors = {
+    'expert': 'red',
+    'hard': 'orange',
+    'intermediate': 'yellow',
+    'easy': 'lightgreen',
+    'rookie': 'cyan'
+} %}
+
+<div class="w3-container w3-center" style="
+  min-height:100vh;
+  background:linear-gradient(135deg, #3c1f1a, #5a2b23);
+  color:#f8e3b0;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-start;
+  align-items:center;
+  font-family:'Georgia', 'Times New Roman', serif;
+  letter-spacing:0.5px;
+  padding: 40px 0;
+">
+
+  <!-- Decorative Frame -->
+  <div style="
+    border:2px solid #d1aa66;
+    border-radius:12px;
+    padding:40px 32px;
+    background:rgba(60, 25, 20, 0.85);
+    box-shadow:0 0 40px rgba(0,0,0,0.5);
+    width:90%;
+    max-width:900px;
+    position:relative;
+  ">
+
+    <!-- Corner Ornaments -->
+    <div style="position:absolute; top:10px; left:10px; width:15px; height:15px; border-top:2px solid #d1aa66; border-left:2px solid #d1aa66;"></div>
+    <div style="position:absolute; top:10px; right:10px; width:15px; height:15px; border-top:2px solid #d1aa66; border-right:2px solid #d1aa66;"></div>
+    <div style="position:absolute; bottom:10px; left:10px; width:15px; height:15px; border-bottom:2px solid #d1aa66; border-left:2px solid #d1aa66;"></div>
+    <div style="position:absolute; bottom:10px; right:10px; width:15px; height:15px; border-bottom:2px solid #d1aa66; border-right:2px solid #d1aa66;"></div>
+
+    <!-- Header -->
+    <h1 style="color:#ffd36f; font-weight:600; margin:0 0 10px 0; text-shadow:0 0 10px rgba(255, 215, 100, 0.3);">
+      Recipe Library
+    </h1>
+    <p style="color:#d9b887; font-size:14px; margin-bottom:30px;">Approved recipes found here.</p>
+
+    <!-- Close Button -->
+    <div style="position: absolute; top: 35px; right: 16px;">
+        <a href="/" style="font-size: 24px; text-decoration: none; color: #ffd36f;">&#x2715;</a>
+    </div>
+
+    {% if library %}
+      <div style="display:flex; flex-wrap: wrap; gap:20px; justify-content:center;">
+        {% for recipe in library %}
+          <div style="
+            display:flex;
+            align-items:flex-start;
+            border:2px solid #d1aa66;
+            border-radius:10px;
+            padding:16px;
+            width:450px;
+            background:rgba(123,46,33,0.85);
+            box-shadow:0 4px 15px rgba(0,0,0,0.4);
+            transition: transform 0.2s;
+          " onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
+
+            <!-- IMAGE SIDE -->
+            {% if recipe['picture_ID'] %}
+              <div class="w3-center">
+                  <a href="/recipetemplate/{{ recipe['id'] }}">
+                      <img src="{{ recipe['picture_ID'] }}"
+                           alt="{{ recipe['title'] }}"
+                           style="width:120px; height:120px; object-fit:cover;
+                                  border-radius:8px; margin-right:16px;
+                                  cursor:pointer; border:1px solid #d1aa66;">
+                  </a>
+              </div>
+            {% else %}
+              <div style="
+                width:120px; height:120px; background:#7b2e21;
+                border-radius:8px; margin-right:16px;
+                display:flex; align-items:center; justify-content:center;
+                color:#f8e3b0; font-weight:bold; border:1px solid #d1aa66;
+              ">
+                No Image
+              </div>
+            {% endif %}
+
+            <!-- TEXT SIDE -->
+            <div style="text-align:left; color:#f8e3b0;">
+                <h3 style="margin:0 0 5px 0;">
+                  <a href="/recipetemplate/{{ recipe['id'] }}"
+                     style="text-decoration:none; color:#ffd36f; text-shadow:0 0 5px rgba(255,215,100,0.3);">
+                     {{ recipe['title'] }}
+                  </a>
+                </h3>
+
+                <p style="font-size:0.85em; margin:-5px 0 10px 0;">
+                  <a href="/userprofile/{{ recipe['author_id'] }}"
+                     style="color:#d9b887; text-decoration:none;">
+                     by {{ recipe['author_id'] }}
+                  </a>
+                </p>
+
+                <p><strong>Prep Time:</strong> {{ recipe['prep_time'] }} mins</p>
+                <p><strong>Cook Time:</strong> {{ recipe['cook_time'] }} mins</p>
+                <p><strong>Serves:</strong> {{ recipe['serving_size'] }}</p>
+
+                <p><strong>Difficulty:</strong>
+                   <span style="color: {{ difficulty_colors.get(recipe['difficulty'], '#ffd36f') }};">
+                       {{ recipe['difficulty'].capitalize() }}
+                   </span>
+                </p>
+
+                {% if recipe['video_url'] %}
+                  <p><a href="{{ recipe['video_url'] }}" target="_blank" style="color:#ffd36f; text-decoration:underline;">Watch Video</a></p>
+                {% endif %}
+
+                {% if admin %}
+                    <form action="/delete_recipe/{{ recipe['id'] }}" method="POST">
+                        <button style="background:#9a3d29; color:#ffe9b2; border:1px solid #d1aa66; padding:4px 8px; border-radius:6px; cursor:pointer;">Delete</button>
+                    </form>
+                {% endif %}
+            </div>
+
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p style="color:#d9b887;">No recipes found.</p>
+    {% endif %}
+
+    <hr style="margin:30px 0 10px 0; border-color:#d1aa66;">
+    <p style="font-size:12px; color:#b7935e;">© 2025 Kevin — Est. 2025</p>
+  </div>
+</div>
+
+{% endblock %}

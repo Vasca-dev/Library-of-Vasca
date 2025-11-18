@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+{% block title %}Create Recipe{% endblock %}
+{% block content %}
+
+<div style="
+    min-height:100vh;
+    background: linear-gradient(135deg, #3c1f1a, #5a2b23);
+    color: #f8e3b0;
+    font-family: 'Georgia','Times New Roman', serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 20px;
+">
+
+    <!-- Close Button -->
+    <div style="position: absolute; top: 16px; right: 16px;">
+        <a href="/" style="font-size: 24px; text-decoration: none; color: #ffd36f;">&#x2715;</a>
+    </div>
+
+    <h2 style="margin-bottom: 20px; color: #ffd36f;">Create a Recipe</h2>
+
+    <form method="post" enctype="multipart/form-data" style="
+        width: 100%;
+        max-width: 600px;
+        background: rgba(60,25,20,0.85);
+        border: 2px solid #d1aa66;
+        border-radius: 12px;
+        padding: 30px;
+        box-shadow: 0 0 30px rgba(0,0,0,0.5);
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    ">
+
+        <label>Title</label>
+        <input name="title" required style="padding:8px; border-radius:6px; border:none; width:100%;">
+
+        <label>Preparation time (minutes)</label>
+        <input type="number" name="prep_time" min="0" step="1" required style="padding:8px; border-radius:6px; border:none; width:100%;">
+
+        <label>Cooking time (minutes)</label>
+        <input type="number" name="cook_time" min="0" step="1" required style="padding:8px; border-radius:6px; border:none; width:100%;">
+
+        <label>Serving size</label>
+        <input type="number" name="serving_size" min="1" step="1" required style="padding:8px; border-radius:6px; border:none; width:100%;">
+
+        <label>Ingredients</label>
+        <div id="ingredients-list">
+            <input name="ingredients[]" required style="padding:6px; border-radius:6px; border:none; width:100%;">
+        </div>
+        <button type="button" onclick="addField('ingredients-list','ingredients[]')" style="align-self:flex-start; background:#d1aa66; color:#3c1f1a; border:none; border-radius:6px; padding:6px 12px; cursor:pointer;">+ Add Ingredient</button>
+
+        <label>Equipment</label>
+        <div id="equipment-list">
+            <input name="equipment[]" required style="padding:6px; border-radius:6px; border:none; width:100%;">
+        </div>
+        <button type="button" onclick="addField('equipment-list','equipment[]')" style="align-self:flex-start; background:#d1aa66; color:#3c1f1a; border:none; border-radius:6px; padding:6px 12px; cursor:pointer;">+ Add Equipment</button>
+
+        <label>Steps</label>
+        <div id="steps-list">
+            <input name="steps[]" required style="padding:6px; border-radius:6px; border:none; width:100%;">
+        </div>
+        <button type="button" onclick="addField('steps-list','steps[]')" style="align-self:flex-start; background:#d1aa66; color:#3c1f1a; border:none; border-radius:6px; padding:6px 12px; cursor:pointer;">+ Add Step</button>
+
+        <label>Difficulty</label>
+        <select name="difficulty" required style="padding:8px; border-radius:6px; border:none; width:100%;">
+            <option value="" disabled selected>Difficulty</option>
+            <option value="rookie">Rookie</option>
+            <option value="easy">Easy</option>
+            <option value="intermediate">Intermediate</option>
+            <option value="hard">Hard</option>
+            <option value="expert">Expert</option>
+        </select>
+
+        <label>Picture</label>
+        <input type="file" name="picture" accept=".png,.jpg,.jpeg" required style="padding:6px; border-radius:6px; border:none; width:100%;">
+
+        <label>Video URL (YouTube only)</label>
+        <input name="video_url"
+               required
+               pattern="https?://(www\.)?(youtube\.com|youtu\.be)/.+"
+               title="Please enter a valid YouTube link"
+               style="padding:8px; border-radius:6px; border:none; width:100%;">
+
+        <!-- Save / Publish Buttons -->
+        <div style="display:flex; gap:10px; justify-content:center; margin-top:10px;">
+            <button type="submit" name="action" value="draft" style="padding:10px 20px; background:#4b00b3; color:#ffd36f; border:none; border-radius:6px; cursor:pointer;">Save as Draft</button>
+            <button type="submit" name="action" value="publish" style="padding:10px 20px; background:#d1aa66; color:#3c1f1a; border:none; border-radius:6px; cursor:pointer;">Publish</button>
+        </div>
+
+    </form>
+</div>
+
+<script>
+  function addField(containerId, inputName) {
+    const container = document.getElementById(containerId);
+    const input = document.createElement('input');
+    input.name = inputName;
+    input.required = true;
+    input.style.padding = '6px';
+    input.style.borderRadius = '6px';
+    input.style.border = 'none';
+    input.style.width = '100%';
+    container.appendChild(document.createElement('br'));
+    container.appendChild(input);
+  }
+</script>
+
+{% endblock %}

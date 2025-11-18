@@ -1,0 +1,66 @@
+<!-- templates/index.html -->
+{% extends 'base.html' %}
+{% block title %}Home{% endblock %}
+{% block content %}
+
+<div class="w3-container w3-center" style="
+  min-height:100vh;
+  background:linear-gradient(135deg, #3c1f1a, #5a2b23);
+  color:#f8e3b0;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  font-family:'Georgia', 'Times New Roman', serif;
+  letter-spacing:0.5px;
+">
+
+  <!-- Decorative Frame -->
+  <div style="
+    border:2px solid #d1aa66;
+    border-radius:12px;
+    padding:40px 32px;
+    background:rgba(60, 25, 20, 0.85);
+    box-shadow:0 0 40px rgba(0,0,0,0.5);
+    width:90%;
+    max-width:750px;
+    position:relative;
+  ">
+
+    <!-- Corner Ornaments -->
+    <div style="position:absolute; top:10px; left:10px; width:15px; height:15px; border-top:2px solid #d1aa66; border-left:2px solid #d1aa66;"></div>
+    <div style="position:absolute; top:10px; right:10px; width:15px; height:15px; border-top:2px solid #d1aa66; border-right:2px solid #d1aa66;"></div>
+    <div style="position:absolute; bottom:10px; left:10px; width:15px; height:15px; border-bottom:2px solid #d1aa66; border-left:2px solid #d1aa66;"></div>
+    <div style="position:absolute; bottom:10px; right:10px; width:15px; height:15px; border-bottom:2px solid #d1aa66; border-right:2px solid #d1aa66;"></div>
+
+    <!-- Header -->
+    <h1 style="color:#ffd36f; font-weight:600; margin:0 0 6px 0; text-shadow:0 0 10px rgba(255, 215, 100, 0.3);">
+      Library of Vasca
+    </h1>
+    <p style="color:#d9b887; font-size:14px; margin-bottom:30px;">Curated collection of recipes.</p>
+
+
+
+    <!-- Buttons! -->
+    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:12px;">
+      <a href="/register" class="w3-button w3-round-large" style="background:#7b2e21; color:#f8e3b0; border:1px solid #d1aa66;">Register</a>
+      <a href="/login" class="w3-button w3-round-large" style="background:#7b2e21; color:#f8e3b0; border:1px solid #d1aa66;">Login</a>
+      <a href="/recipecreator" class="w3-button w3-round-large" style="background:#7b2e21; color:#f8e3b0; border:1px solid #d1aa66;">Create Recipe</a>
+      <a href="/userprofile" class="w3-button w3-round-large" style="background:#7b2e21; color:#f8e3b0; border:1px solid #d1aa66;">Profile</a>
+      <a href="/recipelibrary" class="w3-button w3-round-large" style="background:#7b2e21; color:#f8e3b0; border:1px solid #d1aa66;">Recipes</a>
+
+      {% if admin %}
+        <a href="/pendingrecipes" class="w3-button w3-round-large" style="background:#9a3d29; color:#ffe9b2; border:1px solid #d1aa66;">Pending Recipes</a>
+      {% endif %}
+
+      {% if headadmin %}
+        <a href="/userlist" class="w3-button w3-round-large" style="background:#9a3d29; color:#ffe9b2; border:1px solid #d1aa66;">Manage Users</a>
+      {% endif %}
+    </div>
+
+    <hr style="margin:30px 0 10px 0; border-color:#d1aa66;">
+    <p style="font-size:12px; color:#b7935e;">© 2025 Kevin — Est. 2025</p>
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+{% block title %}Edit Recipe{% endblock %}
+{% block content %}
+
+<div style="
+    min-height:100vh;
+    background: linear-gradient(135deg, #3c1f1a, #5a2b23);
+    color: #f8e3b0;
+    font-family: 'Georgia','Times New Roman', serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 20px;
+">
+
+    <!-- Close Button -->
+    <div style="position: absolute; top: 16px; right: 16px;">
+        <a href="/" style="font-size: 24px; text-decoration: none; color: #ffd36f;">&#x2715;</a>
+    </div>
+
+    <h2 style="margin-bottom: 20px; color: #ffd36f;">Edit Recipe</h2>
+
+    <form method="post" enctype="multipart/form-data" style="
+        width: 100%;
+        max-width: 600px;
+        background: rgba(60,25,20,0.85);
+        border: 2px solid #d1aa66;
+        border-radius: 12px;
+        padding: 30px;
+        box-shadow: 0 0 30px rgba(0,0,0,0.5);
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    ">
+
+        <label>Title</label>
+        <input name="title" value="{{ recipe['title'] }}" required style="padding:8px; border-radius:6px; border:none; width:100%;">
+
+        <label>Preparation time (minutes)</label>
+        <input type="number" name="prep_time" min="0" step="1" value="{{ recipe['prep_time'] }}" required style="padding:8px; border-radius:6px; border:none; width:100%;">
+
+        <label>Cooking time (minutes)</label>
+        <input type="number" name="cook_time" min="0" step="1" value="{{ recipe['cook_time'] }}" required style="padding:8px; border-radius:6px; border:none; width:100%;">
+
+        <label>Serving size</label>
+        <input type="number" name="serving_size" min="1" step="1" value="{{ recipe['serving_size'] }}" required style="padding:8px; border-radius:6px; border:none; width:100%;">
+
+        <!-- Ingredients -->
+        <label>Ingredients</label>
+        <div id="ingredients-list">
+            {% for item in recipe['ingredients'].split('\n') %}
+                {% set clean_item = item.split('.',1)[1] if '.' in item else item %}
+                <input name="ingredients[]" value="{{ clean_item.strip() }}" required style="padding:6px; border-radius:6px; border:none; width:100%;"><br>
+            {% endfor %}
+        </div>
+        <button type="button" onclick="addField('ingredients-list','ingredients[]')" style="align-self:flex-start; background:#d1aa66; color:#3c1f1a; border:none; border-radius:6px; padding:6px 12px; cursor:pointer;">+ Add Ingredient</button>
+
+        <!-- Equipment -->
+        <label>Equipment</label>
+        <div id="equipment-list">
+            {% for item in recipe['equipment'].split('\n') %}
+                {% set clean_item = item.split('.',1)[1] if '.' in item else item %}
+                <input name="equipment[]" value="{{ clean_item.strip() }}" required style="padding:6px; border-radius:6px; border:none; width:100%;"><br>
+            {% endfor %}
+        </div>
+        <button type="button" onclick="addField('equipment-list','equipment[]')" style="align-self:flex-start; background:#d1aa66; color:#3c1f1a; border:none; border-radius:6px; padding:6px 12px; cursor:pointer;">+ Add Equipment</button>
+
+        <!-- Steps -->
+        <label>Steps</label>
+        <div id="steps-list">
+            {% for item in recipe['steps'].split('\n') %}
+                {% set clean_item = item.split('.',1)[1] if '.' in item else item %}
+                <input name="steps[]" value="{{ clean_item.strip() }}" required style="padding:6px; border-radius:6px; border:none; width:100%;"><br>
+            {% endfor %}
+        </div>
+        <button type="button" onclick="addField('steps-list','steps[]')" style="align-self:flex-start; background:#d1aa66; color:#3c1f1a; border:none; border-radius:6px; padding:6px 12px; cursor:pointer;">+ Add Step</button>
+
+        <!-- Difficulty -->
+        <label>Difficulty</label>
+        <select name="difficulty" required style="padding:8px; border-radius:6px; border:none; width:100%;">
+            <option value="" disabled>Difficulty</option>
+            <option value="rookie" {% if recipe['difficulty']=='rookie' %}selected{% endif %}>Rookie</option>
+            <option value="easy" {% if recipe['difficulty']=='easy' %}selected{% endif %}>Easy</option>
+            <option value="intermediate" {% if recipe['difficulty']=='intermediate' %}selected{% endif %}>Intermediate</option>
+            <option value="hard" {% if recipe['difficulty']=='hard' %}selected{% endif %}>Hard</option>
+            <option value="expert" {% if recipe['difficulty']=='expert' %}selected{% endif %}>Expert</option>
+        </select>
+
+        <!-- Picture -->
+        <label>Picture</label>
+        {% if recipe['picture_ID'] %}
+            <img src="{{ recipe['picture_ID'] }}" alt="Recipe Picture" style="width:200px; border-radius:8px; margin-bottom:8px;">
+        {% endif %}
+        <input type="file" name="picture" accept=".png,.jpg,.jpeg" style="padding:6px; border-radius:6px; border:none; width:100%;">
+
+        <!-- Video URL -->
+        <label>Video URL (YouTube only)</label>
+        <input name="video_url"
+               value="{{ recipe['video_url'] or '' }}"
+               pattern="https?://(www\.)?(youtube\.com|youtu\.be)/.+"
+               title="Please enter a valid YouTube link"
+               style="padding:8px; border-radius:6px; border:none; width:100%;">
+
+        <!-- Save / Publish Buttons -->
+        <div style="display:flex; gap:10px; justify-content:center; margin-top:10px;">
+            <button type="submit" name="action" value="draft" style="padding:10px 20px; background:#4b00b3; color:#ffd36f; border:none; border-radius:6px; cursor:pointer;">Save as Draft</button>
+            <button type="submit" name="action" value="publish" style="padding:10px 20px; background:#d1aa66; color:#3c1f1a; border:none; border-radius:6px; cursor:pointer;">Publish</button>
+        </div>
+
+    </form>
+
+</div>
+
+<script>
+  function addField(containerId, inputName) {
+    const container = document.getElementById(containerId);
+    const input = document.createElement('input');
+    input.name = inputName;
+    input.required = true;
+    input.style.padding = '6px';
+    input.style.borderRadius = '6px';
+    input.style.border = 'none';
+    input.style.width = '100%';
+    container.appendChild(document.createElement('br'));
+    container.appendChild(input);
+  }
+</script>
+
+{% endblock %}

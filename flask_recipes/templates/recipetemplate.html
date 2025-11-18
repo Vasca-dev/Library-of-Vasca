@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+{% block title %}{{ recipe['title'] }}{% endblock %}
+{% block content %}
+
+<div style="
+    min-height:100vh;
+    background: linear-gradient(135deg, #3c1f1a, #5a2b23);
+    color: #f8e3b0;
+    font-family: 'Georgia','Times New Roman', serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 20px;
+">
+
+    <!-- Close Button -->
+    <div style="position: absolute; top: 16px; right: 16px;">
+        <a href="/" style="font-size: 24px; text-decoration: none; color: #ffd36f;">&#x2715;</a>
+    </div>
+
+    <!-- Recipe Card -->
+    <div style="
+        width: 100%;
+        max-width: 700px;
+        background: rgba(60,25,20,0.85);
+        border: 2px solid #d1aa66;
+        border-radius: 12px;
+        padding: 30px 25px;
+        box-shadow: 0 0 30px rgba(0,0,0,0.5);
+    ">
+
+        <h2 style="color: #ffd36f; margin-bottom: 10px;">{{ recipe['title'] }}</h2>
+        <p style="color: #d9b887; font-size: 14px; margin-bottom: 20px;"><strong>By:</strong> {{ recipe['author_id'] }}</p>
+
+        {% if recipe['picture_ID'] %}
+            <img src="{{ recipe['picture_ID'] }}" alt="{{ recipe['title'] }}" style="width:100%; max-width:400px; border-radius:10px; margin-bottom:20px;">
+        {% endif %}
+
+        <p><strong>Prep Time:</strong> {{ recipe['prep_time'] }} mins</p>
+        <p><strong>Cook Time:</strong> {{ recipe['cook_time'] }} mins</p>
+        <p><strong>Serves:</strong> {{ recipe['serving_size'] }}</p>
+        <p><strong>Difficulty:</strong> {{ recipe['difficulty'].capitalize() }}</p>
+
+        <!-- Action Buttons -->
+        <div style="display:flex; gap:10px; flex-wrap: wrap; margin: 15px 0;">
+            {% if admin %}
+                <form action="/delete_recipe/{{ recipe['id'] }}" method="POST">
+                    <button type="submit" style="padding:8px 16px; background:#b30000; color:#fff; border:none; border-radius:6px; cursor:pointer;">Delete</button>
+                </form>
+
+                {% if not recipe['approved'] and not recipe['draft'] %}
+                    <form action="/approve_recipe/{{ recipe['id'] }}" method="POST">
+                        <button type="submit" style="padding:8px 16px; background:#d1aa66; color:#3c1f1a; border:none; border-radius:6px; cursor:pointer;">Approve</button>
+                    </form>
+                {% endif %}
+            {% endif %}
+
+            {% if owner and not admin %}
+                <form action="/delete_recipe/{{ recipe['id'] }}" method="POST">
+                    <button type="submit" style="padding:8px 16px; background:#b30000; color:#fff; border:none; border-radius:6px; cursor:pointer;">Delete</button>
+                </form>
+            {% endif %}
+
+            {% if owner and not recipe['approved'] and recipe['draft'] %}
+                <form action="{{ url_for('edit_recipe', recipe_id=recipe['id']) }}" method="GET">
+                    <button type="submit" style="padding:8px 16px; background:#4b00b3; color:#ffd36f; border:none; border-radius:6px; cursor:pointer;">Edit Recipe</button>
+                </form>
+            {% endif %}
+        </div>
+
+        <!-- Ingredients -->
+        <h3 style="color:#ffd36f; margin-top:20px;">Ingredients</h3>
+        {% if recipe['ingredients'] %}
+            <pre style="white-space: pre-wrap; font-family:inherit; color:#f8e3b0; background:rgba(255,255,255,0.05); padding:10px; border-radius:6px;">{{ recipe['ingredients'] }}</pre>
+        {% else %}
+            <p>No ingredients listed.</p>
+        {% endif %}
+
+        <!-- Equipment -->
+        <h3 style="color:#ffd36f; margin-top:20px;">Equipment</h3>
+        {% if recipe['equipment'] %}
+            <pre style="white-space: pre-wrap; font-family:inherit; color:#f8e3b0; background:rgba(255,255,255,0.05); padding:10px; border-radius:6px;">{{ recipe['equipment'] }}</pre>
+        {% else %}
+            <p>No equipment listed.</p>
+        {% endif %}
+
+        <!-- Steps -->
+        <h3 style="color:#ffd36f; margin-top:20px;">Steps</h3>
+        {% if recipe['steps'] %}
+            <pre style="white-space: pre-wrap; font-family:inherit; color:#f8e3b0; background:rgba(255,255,255,0.05); padding:10px; border-radius:6px;">{{ recipe['steps'] }}</pre>
+        {% else %}
+            <p>No steps listed.</p>
+        {% endif %}
+
+        <!-- Video -->
+        {% if recipe['video_url'] %}
+            {% set youtube_id = recipe['video_url'].split('v=')[-1].split('&')[0] %}
+            <div style="margin: 20px 0; display:flex; justify-content:center;">
+                <iframe width="100%" height="315"
+                        src="https://www.youtube.com/embed/{{ youtube_id }}"
+                        title="Recipe Video"
+                        frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen>
+                </iframe>
+            </div>
+        {% endif %}
+
+    </div>
+</div>
+
+{% endblock %}
