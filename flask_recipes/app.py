@@ -4,7 +4,7 @@ from werkzeug.utils import secure_filename
 import os
 import json
 
-# last signed 19/11/2025 at 12:07 (Kevin)
+# last signed 19/11/2025 at 12:54 (Kevin)
 
 app = Flask(__name__)
 app.secret_key = 'secret_key'
@@ -671,4 +671,5 @@ if __name__ == '__main__':
     init_db()
 
     app.run(port=1951, debug=True)
+
 
